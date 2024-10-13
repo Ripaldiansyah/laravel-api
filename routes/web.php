@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserRequestHistoryController;
 use App\Models\UserRequestHistory;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
@@ -32,11 +33,11 @@ Route::prefix('api')->group(function () {
     });
 
     Route::prefix('user_request_histories')->group(function () {
-        Route::get('/', [UserRequestHistory::class, 'index']);
-        Route::post('/', [UserRequestHistory::class, 'store']);
-        Route::get('/{id}', [UserRequestHistory::class, 'show']);
-        Route::put('/{id}', [UserRequestHistory::class, 'update']);
-        Route::delete('/{id}', [UserRequestHistory::class, 'destroy']);
+        Route::get('/', [UserRequestHistoryController::class, 'index']);
+        Route::post('/', [UserRequestHistoryController::class, 'store']);
+        Route::get('/{id}', [UserRequestHistoryController::class, 'show']);
+        Route::put('/{id}', [UserRequestHistoryController::class, 'update']);
+        Route::delete('/{id}', [UserRequestHistoryController::class, 'destroy']);
     });
 });
 
