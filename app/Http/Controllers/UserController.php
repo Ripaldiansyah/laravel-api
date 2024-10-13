@@ -3,74 +3,161 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    // Display a listing of the resource.
-    public function index()
+
+    public function index(Request $request)
     {
-        return User::all();
+
+        try {
+
+            $current_user = Auth::user();
+
+            $query = User::where(
+                'company_id',
+                $current_user->company_id
+            );
+            if ($request->has('sort_field') && $request->has('sort_type')) {
+                $sortField = $request->sort_field;
+                $sortDirection = $request->sort_type;
+
+                $query->orderBy($sortField, $sortDirection);
+            }
+
+            $limit = $request->has('limit') ? (int)$request->limit : 10;
+            if ($limit > 50) {
+                $limit = 50;
+            }
+            $users = $query->paginate($limit);
+
+            return response()->json([
+                'data' => $users
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
-    // Store a newly created resource in storage.
     public function store(Request $request)
     {
-        $request->validate([
+
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+            ]);
+
+
+            $current_user = Auth::user();
+            $company_id = $current_user->company_id;
+
+            $request->merge([
+                'company_id' => $company_id,
+                'role' => 'user',
+                'status' => 'Active',
+                'photo' => 1,
+            ]);
+            $user = User::create($request->all());
+            return response()->json($user, 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    public function show($id)
+    {
+        $current_user = Auth::user();
+        $company_id = $current_user->company_id;
+
+
+        $user = User::where('company_id', $company_id)
+            ->where('id', $id)->first();
+
+        if (!$user) {
+            return response()->json([
+                "error" => "user not found"
+            ]);
+        }
+
+        return response()->json([
+            "user" => $user
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $current_user = Auth::user();
+        $company_id = $current_user->company_id;
+
+
+        $validator = Validator::make($request->all(),[
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'required|string|min:6',
             'role' => 'required|string',
             'status' => 'required|string',
-            // tambahkan validasi lain sesuai kebutuhan
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'status' => $request->status,
-            'company_id' => $request->company_id, // jika ada
-            // tambahkan field lain sesuai kebutuhan
-        ]);
-
-        return response()->json($user, 201);
-    }
-
-    // Display the specified resource.
-    public function show(User $user)
-    {
-        return $user;
-    }
-
-    // Update the specified resource in storage.
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'sometimes|required|string|min:6',
-            'role' => 'sometimes|required|string',
-            'status' => 'sometimes|required|string',
-            // tambahkan validasi lain sesuai kebutuhan
-        ]);
-
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->password);
+        if($validator->fails()){
+            return  response()->json([
+               'error' => $validator->errors()
+            ], 400);
         }
 
-        $user->fill($request->only(['name', 'email', 'role', 'status']));
-        $user->save();
+        $user = User::findOrFail($id);
 
-        return response()->json($user);
+
+
+        if ($user->company_id !=$company_id ){
+            return response()->json([
+                "error" => "user not found"
+            ], 404);
+        }
+
+
+
+
+        $data = $request->all();
+        $data["company_id"] = $company_id;
+        $user->update($data);
+
+        return response()->json([
+            "user" => $user
+        ], 200);
     }
 
     // Remove the specified resource from storage.
-    public function destroy(User $user)
+    public function destroy($id)
     {
+
+        $user = User::findOrFail($id);
+        $current_user = Auth::user();
+        $company_id = $current_user->company_id;
+
+
+
+        if ($user->company_id !=$company_id ){
+            return response()->json([
+                "error" => "user not found"
+            ], 404);
+        }
+
         $user->delete();
-        return response()->json(null, 204);
+        return response()->json([
+            "message" => "successfully deleted user"
+        ], 200);
     }
 }

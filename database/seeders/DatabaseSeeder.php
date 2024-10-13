@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Company;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,45 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'hrd@mail.com',
-            'password' => bcrypt('password123'),
-            'company_id' => 1,
-            'role' => 'hrd',
-            'photo' => 1,
-            'status' => 'Active',
-            'departement' => 'HR',
-        ]);
-
-        User::create([
-            'name' => 'Jane Smith',
-            'email' => 'user@mail.com',
-            'password' => bcrypt('password123'),
-            'company_id' => 1,
-            'role' => 'user',
-            'photo' => 2,
-            'status' => 'Active',
-            'departement' => 'Finance',
-        ]);
-
-        User::create([
-            'name' => 'Alice Johnson',
-            'email' => 'user2@example.com',
-            'password' => bcrypt('password123'),
-            'company_id' => 2,
-            'role' => 'user',
-            'photo' => 3,
-            'status' => 'Inactive',
-            'departement' => 'Marketing',
-        ]);
-
-        Company::create([
+        // Membuat perusahaan
+        $company1 = Company::create([
             'company_name' => 'Tech Solutions',
             'description' => 'A leading tech solutions provider.',
-            'photo' => null,
+            
             'address' => '123 Tech Street',
             'latitude' => -6.200000,
             'longitude' => 106.816666,
@@ -61,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'Active',
         ]);
 
-        Company::create([
+        $company2 = Company::create([
             'company_name' => 'Creative Agency',
             'description' => 'Innovative agency for creative solutions.',
             'photo' => null,
@@ -73,7 +38,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'Active',
         ]);
 
-        Company::create([
+        $company3 = Company::create([
             'company_name' => 'Finance Corp',
             'description' => 'Financial services and consulting.',
             'photo' => null,
@@ -84,5 +49,21 @@ class DatabaseSeeder extends Seeder
             'working_hour_end' => '17:30',
             'status' => 'Inactive',
         ]);
+
+        // Membuat 20 pengguna untuk setiap perusahaan
+        foreach ([$company1, $company2, $company3] as $company) {
+            for ($i = 1; $i <= 20; $i++) {
+                User::create([
+                    'name' => 'User ' . $i . ' ' . $company->company_name,
+                    'email' => strtolower('user' . $i . '@' . strtolower(str_replace(' ', '', $company->company_name)) . '.com'),
+                    'password' => bcrypt('password123'),
+                    'company_id' => $company->id,
+                    'role' => 'user',
+                    'photo' => $i, // Ganti dengan ID foto yang sesuai jika ada
+                    'status' => 'Active',
+                    'departement' => 'Department ' . $i,
+                ]);
+            }
+        }
     }
 }
