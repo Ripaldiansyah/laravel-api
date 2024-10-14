@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
@@ -53,8 +54,12 @@ Route::prefix('api')->group(function () {
         Route::post('/', [SaleController::class, 'store']);
         Route::get('/{id}', [SaleController::class, 'show']);
     });
+
+    Route::prefix('suppliers')->group(function () {
+        Route::get('/', [SupplierController::class, 'index']);
+        Route::post('/', [SupplierController::class, 'store']);
+        Route::get('/{id}', [SupplierController::class, 'show']);
+        Route::put('/{id}', [SupplierController::class, 'update']);
+        Route::delete('/{id}', [SupplierController::class, 'destroy']);
+    });
 });
-
-
-
-// Route::get('/test',action: [TestController::class])->name('test.about');
