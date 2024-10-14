@@ -31,30 +31,12 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->string('address');
-            $table->double('latitude');
-            $table->double('longitude');
-            $table->string('working_hour_start')->nullable();
-            $table->string('working_hour_end')->nullable();
+            $table->string('store_hour_start')->nullable();
+            $table->string('store_hour_end')->nullable();
             $table->string('status');
             $table->timestamps();
         });
 
-        // Create AttendanceHistories table
-        Schema::create('attendance_histories', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->double('check_in_latitude');
-            $table->double('check_in_longitude');
-            $table->string('check_in_photo')->nullable();
-            $table->dateTime('check_in_date');
-            $table->double('check_out_latitude')->nullable();
-            $table->double('check_out_longitude')->nullable();
-            $table->string('check_out_photo')->nullable();
-            $table->dateTime('check_out_date')->nullable();
-            $table->string('working_hour')->nullable();
-            $table->string('status');
-            $table->timestamps();
-        });
 
         Schema::create('products', function (Blueprint $table) {
             $table->id();

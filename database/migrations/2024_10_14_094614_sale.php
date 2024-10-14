@@ -12,8 +12,7 @@ return new class extends Migration {
     {
         Schema::create('tr_h_sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('category_id')->constrained();
+            $table->foreignId('company_id')->constrained();
             $table->decimal('total_amount', 10, 2);
             $table->integer('total_quantity');
             $table->timestamp('sold_at')->useCurrent();
@@ -23,10 +22,7 @@ return new class extends Migration {
         Schema::create('tr_d_sales', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tr_h_sales')->constrained();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('category_id')->constrained();
             $table->string('product_name');
-            $table->string('category_name');
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
             $table->decimal('total', 10, 2);

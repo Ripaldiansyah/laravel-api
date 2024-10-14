@@ -33,7 +33,6 @@ class CategoryController extends Controller
             return response()->json([
                 'data' => $categories
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -50,8 +49,7 @@ class CategoryController extends Controller
 
             $company_id = CompanyController::getCompanyId();
 
-            $categoryRegistered = Category::where('category_name', $request->category_name)->
-            where('company_id', $company_id)->first();
+            $categoryRegistered = Category::where('category_name', $request->category_name)->where('company_id', $company_id)->first();
 
 
             if ($categoryRegistered) {
@@ -65,10 +63,9 @@ class CategoryController extends Controller
 
             $category = Category::create($request->all());
             return response()->json(
-                $category, 201
+                $category,
+                201
             );
-
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -128,7 +125,7 @@ class CategoryController extends Controller
                 ->where('company_id', $company_id)->first();
             if (!$category) {
                 return response()->json([
-                    'message' => "$category not found"
+                    'message' => "category not found"
                 ], 404);
             }
 
@@ -149,6 +146,5 @@ class CategoryController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
-
     }
 }

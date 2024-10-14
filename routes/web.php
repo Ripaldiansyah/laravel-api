@@ -4,10 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RequestApprovalController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserRequestHistoryController;
-use App\Models\UserRequestHistory;
+
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
@@ -49,7 +48,11 @@ Route::prefix('api')->group(function () {
         Route::delete('/{id}', [CategoryController::class, 'destroy']);
     });
 
-
+    Route::prefix('sales')->group(function () {
+        Route::get('/', [SaleController::class, 'index']);
+        Route::post('/', [SaleController::class, 'store']);
+        Route::get('/{id}', [SaleController::class, 'show']);
+    });
 });
 
 

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,12 +17,10 @@ class DatabaseSeeder extends Seeder
         $company1 = Company::create([
             'company_name' => 'Tech Solutions',
             'description' => 'A leading tech solutions provider.',
-            
+            'photo' => null,
             'address' => '123 Tech Street',
-            'latitude' => -6.200000,
-            'longitude' => 106.816666,
-            'working_hour_start' => '09:00',
-            'working_hour_end' => '17:00',
+            'store_hour_start' => '09:00',
+            'store_hour_end' => '17:00',
             'status' => 'Active',
         ]);
 
@@ -31,10 +29,8 @@ class DatabaseSeeder extends Seeder
             'description' => 'Innovative agency for creative solutions.',
             'photo' => null,
             'address' => '456 Creative Lane',
-            'latitude' => -6.250000,
-            'longitude' => 106.810000,
-            'working_hour_start' => '10:00',
-            'working_hour_end' => '18:00',
+            'store_hour_start' => '10:00',
+            'store_hour_end' => '18:00',
             'status' => 'Active',
         ]);
 
@@ -43,10 +39,9 @@ class DatabaseSeeder extends Seeder
             'description' => 'Financial services and consulting.',
             'photo' => null,
             'address' => '789 Finance Blvd',
-            'latitude' => -6.300000,
-            'longitude' => 106.700000,
-            'working_hour_start' => '08:30',
-            'working_hour_end' => '17:30',
+
+            'store_hour_start' => '08:30',
+            'store_hour_end' => '17:30',
             'status' => 'Inactive',
         ]);
 
