@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class CategoryController extends Controller
 {
     public function index(Request $request)
     {
         try {
             $company_id = CompanyController::getCompanyId();
-            $query = Product::where(
+            $query = Category::where(
                 'company_id',
                 $company_id
             );
+
             if ($request->has('sort_field') && $request->has('sort_type')) {
                 $sortField = $request->sort_field;
                 $sortDirection = $request->sort_type;
@@ -27,10 +28,10 @@ class ProductController extends Controller
                 $limit = 50;
             }
 
-            $products = $query->paginate($limit);
+            $categories = $query->paginate($limit);
 
             return response()->json([
-                'data' => $products
+                'data' => $categories
             ], 200);
 
         } catch (Exception $e) {
@@ -44,35 +45,27 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'product_name' => 'required|string|max:50',
-                'price' => 'required|numeric',
-                'stock' => 'required|integer',
-                'sku' => 'required',
-                'category_id' => 'required|integer'
+                'category_name' => 'required|string|max:50',
             ]);
 
             $company_id = CompanyController::getCompanyId();
 
-            $productRegistered = Product::where('product_name', $request->product_name)->
+            $categoryRegistered = Category::where('category_name', $request->category_name)->
             where('company_id', $company_id)->first();
 
 
-            if ($productRegistered) {
-                $stock = $productRegistered->stock;
-                $stock += $request->stock;
-                $request["stock"] = $stock;
-
-                return $this->update($request, $productRegistered->id);
+            if ($categoryRegistered) {
+                throw new Exception('Category already registered.');
             }
+
             $request->merge([
                 'company_id' => $company_id,
 
             ]);
 
-
-            $product = Product::create($request->all());
+            $category = Category::create($request->all());
             return response()->json(
-                $product, 201
+                $category, 201
             );
 
 
@@ -88,17 +81,17 @@ class ProductController extends Controller
 
         try {
             $company_id = CompanyController::getCompanyId();
-            $product = Product::where('id', $id)
+            $category = Category::where('id', $id)
                 ->where('company_id', $company_id)->first();
 
-            if (!$product) {
+            if (!$category) {
                 return response()->json([
-                    'message' => "product not found"
+                    'message' => "category not found"
                 ], 404);
             }
 
-            $product->update($request->all());
-            return response()->json($product, 200);
+            $category->update($request->all());
+            return response()->json($category, 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -110,16 +103,16 @@ class ProductController extends Controller
     {
         try {
             $company_id = CompanyController::getCompanyId();
-            $product = Product::where('id', $id)
+            $category = Category::where('id', $id)
                 ->where('company_id', $company_id)->first();
-            if (!$product) {
+            if (!$category) {
                 return response()->json([
-                    'message' => "product not found"
+                    'message' => "category not found"
                 ], 404);
             }
 
-            $product->delete();
-            return response()->json(['message' => 'product successfully deleted'], 200);
+            $category->delete();
+            return response()->json(['message' => 'category successfully deleted'], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -131,16 +124,25 @@ class ProductController extends Controller
     {
         try {
             $company_id = CompanyController::getCompanyId();
-            $product = Product::where('id', $id)
+            $category = Category::where('id', $id)
                 ->where('company_id', $company_id)->first();
-            if (!$product) {
+            if (!$category) {
                 return response()->json([
-                    'message' => "product not found"
+                    'message' => "$category not found"
                 ], 404);
             }
 
+            $response = [
+                'id' => $category->id,
+                'category_name' => $category->category_name,
+                'company_id' => $category->company_id,
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
+                'products' => $category->products
+            ];
+
             return response()->json([
-                'product' => $product
+                'category' => $response
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -149,6 +151,4 @@ class ProductController extends Controller
         }
 
     }
-
-
 }

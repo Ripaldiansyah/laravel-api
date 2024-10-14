@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -57,17 +56,15 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_request_histories', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->string('request_type');
-            $table->dateTime('request_date');
+            $table->string('product_name');
             $table->text('description')->nullable();
-            $table->string('attachment')->nullable();
-            $table->string('status');
-            $table->integer('approved_by')->nullable();
-            $table->integer('rejected_by')->nullable();
-            $table->text('rejected_note')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->integer('stock')->default(0);
+            $table->string('sku')->unique();
+            $table->integer('company_id');
+            $table->integer('category_id');
             $table->timestamps();
         });
 
