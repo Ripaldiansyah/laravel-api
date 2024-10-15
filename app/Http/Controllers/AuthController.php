@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 
 class AuthController extends Controller
@@ -15,14 +14,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        /** @var User $user **/
         if (Auth::attempt($credentials)) {
-           $user = Auth::user();
-           $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
-//           $user->tokens()->where('token', hash('sha256', $token))->update([
-//              'created_at' => now(),
-//              'update_at' => now()->addMinutes(5)
-//           ]);
+            $user = Auth::user();
+            $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
+            //           $user->tokens()->where('token', hash('sha256', $token))->update([
+            //              'created_at' => now(),
+            //              'update_at' => now()->addMinutes(5)
+            //           ]);
             return response()->json([
                 'data' => [
                     "id" => $user->id,
@@ -40,19 +38,34 @@ class AuthController extends Controller
     }
 
 
-    public function logout(Request $request){
-        $token = $request->bearerToken();
-        if ($token){
+    public function logout(Request $request)
+    {
+        $fullToken = $request->bearerToken();
+
+        if ($fullToken) {
             $user = Auth::user();
-            $user->tokens()->where('token', hash('sha256', $token))->delete();
+
+            $tokenParts = explode('|', $fullToken);
+            $token = end($tokenParts);
+
+            $currentUserToken = $user->tokens()->where('token', hash('sha256', $token))->first();
+
+            if (!$currentUserToken) {
+                return response()->json([
+                    'message' => 'Invalid token'
+                ], 401);
+            }
+
+
+            $currentUserToken->delete();
+
             return response()->json([
-                'message' => 'Succesfully logget out'
+                'message' => 'Successfully logged out'
             ]);
         }
 
-        return  response()->json([
+        return response()->json([
             'message' => 'Token is required'
-        ]);
+        ], 400);
     }
-
 }
