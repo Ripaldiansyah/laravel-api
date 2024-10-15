@@ -14,4 +14,9 @@ class Tr_H_Purchase extends Model
     {
         return $this->hasMany(Tr_D_Purchase::class, 'tr_h_purchase');
     }
+
+    public function returns()
+    {
+        return $this->hasOne(Tr_H_SupplierReturn::class);
+    }
 }

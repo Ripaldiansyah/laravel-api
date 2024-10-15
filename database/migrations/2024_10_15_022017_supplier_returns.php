@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('tr_h_supplier_returns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained();
-            $table->foreignId('supplier_id')->constrained();
+            $table->foreignId('tr_h_purchase')->constrained();
             $table->string('total_quantity');
             $table->string('total_amount');
+            $table->string('reason')->nullable();
             $table->string('status');
             $table->timestamps();
         });
@@ -25,11 +26,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tr_h_supplier_returns')->constrained();
             $table->foreignId('product_id')->constrained();
-            $table->decimal('purchase_price');
-            $table->integer('purchase_quantity');
-            $table->decimal('purchase_amount');
-            $table->integer('purchase_quantity_release')->nullable();
-            $table->decimal('purchase_amount_release')->nullable();
+            $table->decimal('return_price');
+            $table->integer('return_quantity');
+            $table->decimal('return_amount');
+            $table->integer('return_quantity_approve')->nullable();
+            $table->decimal('return_amount_approve')->nullable();
             $table->timestamps();
         });
     }

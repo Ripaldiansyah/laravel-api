@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierReturnController;
 use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
@@ -70,5 +71,13 @@ Route::prefix('api')->group(function () {
         Route::get('/{id}', [PurchaseController::class, 'show']);
         Route::put('/{id}', [PurchaseController::class, 'update']);
         Route::delete('/{id}', [PurchaseController::class, 'destroy']);
+    });
+
+    Route::prefix('supplier-returns')->group(function () {
+        Route::get('/', [SupplierReturnController::class, 'index']);
+        Route::post('/', [SupplierReturnController::class, 'store']);
+        Route::get('/{id}', [SupplierReturnController::class, 'show']);
+        Route::put('/{id}', [SupplierReturnController::class, 'update']);
+        Route::delete('/{id}', [SupplierReturnController::class, 'destroy']);
     });
 });
