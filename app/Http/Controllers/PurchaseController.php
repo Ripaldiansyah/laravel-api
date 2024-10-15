@@ -107,13 +107,14 @@ class PurchaseController extends Controller
 
             $tr_details = $request->products;
             foreach ($tr_details as $tr_detail) {
+
                 $product_detail = [
                     'tr_h_purchase' => $header->id,
                     'product_id' =>  $tr_detail["product_id"],
                     'purchase_price' => $tr_detail["purchase_price"],
                     'purchase_quantity' => $tr_detail["purchase_quantity"],
                     'purchase_amount' => $tr_detail["purchase_quantity"] * $tr_detail["purchase_price"],
-                    'exp_date' => $tr_detail->exp_date,
+                    'exp_date' => $tr_detail["exp_date"],
                 ];
                 Tr_D_Purchase::create($product_detail);
                 $products[] = $product_detail;
