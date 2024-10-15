@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tr_h_purchases', function (Blueprint $table) {
+        Schema::create('tr_h_supplier_returns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained();
             $table->foreignId('supplier_id')->constrained();
@@ -20,12 +20,12 @@ return new class extends Migration
             $table->string('status');
             $table->timestamps();
         });
-        Schema::create('tr_d_purchases', function (Blueprint $table) {
+
+        Schema::create('tr_d_supplier_returns', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tr_h_purchase')->constrained();
+            $table->foreignId('tr_h_supplier_returns')->constrained();
             $table->foreignId('product_id')->constrained();
             $table->decimal('purchase_price');
-            $table->date('exp_date');
             $table->integer('purchase_quantity');
             $table->decimal('purchase_amount');
             $table->integer('purchase_quantity_release')->nullable();

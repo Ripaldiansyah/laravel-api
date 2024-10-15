@@ -84,6 +84,7 @@ class PurchaseController extends Controller
                 'total_quantity' => 'required|integer',
                 'total_amount' => 'required|numeric',
                 'products' => 'required'
+
             ]);
 
             $company_id = CompanyController::getCompanyId();
@@ -112,6 +113,7 @@ class PurchaseController extends Controller
                     'purchase_price' => $tr_detail["purchase_price"],
                     'purchase_quantity' => $tr_detail["purchase_quantity"],
                     'purchase_amount' => $tr_detail["purchase_quantity"] * $tr_detail["purchase_price"],
+                    'exp_date' => $tr_detail->exp_date,
                 ];
                 Tr_D_Purchase::create($product_detail);
                 $products[] = $product_detail;
