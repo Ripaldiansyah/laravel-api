@@ -45,15 +45,13 @@ class SaleController extends Controller
     public function store(Request $request)
     {
         try {
-            $validate = $request->validate([
+            $request->validate([
                 'total_amount' => 'required|numeric',
                 'total_quantity' => 'required|integer',
                 'products' => 'required'
             ]);
 
             $company_id = CompanyController::getCompanyId();
-
-
             DB::beginTransaction();
 
             $tr_header = [
@@ -62,7 +60,6 @@ class SaleController extends Controller
                 'total_quantity' => $request->total_quantity
             ];
 
-
             $tr_details = $request->products;
             $header = Tr_H_Sale::create($tr_header);
 
@@ -70,9 +67,7 @@ class SaleController extends Controller
             $products_failed = [];
 
             foreach ($tr_details as $tr_detail) {
-
                 $product = Product::where('id', $tr_detail["product_id"])->first();
-
                 $product_detail = [
                     'tr_h_sales' => $header->id,
                     'product_name' => $product->product_name,
@@ -140,7 +135,7 @@ class SaleController extends Controller
             ];
 
             return response()->json([
-                'category' => $response
+                'data' => $response
             ], 200);
         } catch (Exception $e) {
             return response()->json([

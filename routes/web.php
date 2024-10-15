@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -49,17 +50,25 @@ Route::prefix('api')->group(function () {
         Route::delete('/{id}', [CategoryController::class, 'destroy']);
     });
 
-    Route::prefix('sales')->group(function () {
-        Route::get('/', [SaleController::class, 'index']);
-        Route::post('/', [SaleController::class, 'store']);
-        Route::get('/{id}', [SaleController::class, 'show']);
-    });
-
     Route::prefix('suppliers')->group(function () {
         Route::get('/', [SupplierController::class, 'index']);
         Route::post('/', [SupplierController::class, 'store']);
         Route::get('/{id}', [SupplierController::class, 'show']);
         Route::put('/{id}', [SupplierController::class, 'update']);
         Route::delete('/{id}', [SupplierController::class, 'destroy']);
+    });
+
+    Route::prefix('sales')->group(function () {
+        Route::get('/', [SaleController::class, 'index']);
+        Route::post('/', [SaleController::class, 'store']);
+        Route::get('/{id}', [SaleController::class, 'show']);
+    });
+
+    Route::prefix('purchases')->group(function () {
+        Route::get('/', [PurchaseController::class, 'index']);
+        Route::post('/', [PurchaseController::class, 'store']);
+        Route::get('/{id}', [PurchaseController::class, 'show']);
+        Route::put('/{id}', [PurchaseController::class, 'update']);
+        Route::delete('/{id}', [PurchaseController::class, 'destroy']);
     });
 });

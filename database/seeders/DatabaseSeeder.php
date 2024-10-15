@@ -2,7 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Company;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\Tr_D_Purchase;
+use App\Models\Tr_D_Sale;
+use App\Models\Tr_H_Sale;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -34,6 +40,9 @@ class DatabaseSeeder extends Seeder
             'status' => 'Active',
         ]);
 
+
+
+
         $company3 = Company::create([
             'company_name' => 'Finance Corp',
             'description' => 'Financial services and consulting.',
@@ -44,6 +53,48 @@ class DatabaseSeeder extends Seeder
             'store_hour_end' => '17:30',
             'status' => 'Inactive',
         ]);
+
+        $categories = [
+            'Electronics',
+            'Furniture',
+            'Stationery',
+            'Clothing',
+        ];
+
+        foreach ($categories as $category) {
+            Category::create([
+                'category_name' => $category,
+                'company_id' => $company1->id,
+            ]);
+        }
+
+
+        for ($i = 0; $i < 20; $i++) {
+            $products = [
+                ['product_name' => "Laptop . $i", 'price' => 1500.00, 'stock' => 10, 'sku' => "LAP123 . $i", 'category_id' => 1],
+                ['product_name' => "Desk . $i", 'price' => 200.00, 'stock' => 5, 'sku' => "DESK456 . $i", 'category_id' => 2],
+                ['product_name' => "Pen . $i", 'price' => 1.00, 'stock' => 100, 'sku' => "PEN789 . $i", 'category_id' => 3],
+            ];
+
+            foreach ($products as $product) {
+                Product::create(array_merge($product, ['company_id' => $company1->id]));
+            }
+        }
+
+
+        // Membuat supplier
+        $suppliers = [
+            ['supplier_name' => 'Supplier A', 'supplier_address' => '123 Supplier St'],
+            ['supplier_name' => 'Supplier B', 'supplier_address' => '456 Supplier Rd'],
+        ];
+
+        foreach ($suppliers as $supplier) {
+            Supplier::create(array_merge($supplier, ['company_id' => $company1->id]));
+        }
+
+        // Membuat transaksi penjualan
+
+
 
         // Membuat 20 pengguna untuk setiap perusahaan
         foreach ([$company1, $company2, $company3] as $company) {
