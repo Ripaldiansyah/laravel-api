@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 
 class AuthController extends Controller
@@ -13,14 +13,19 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
-            //           $user->tokens()->where('token', hash('sha256', $token))->update([
-            //              'created_at' => now(),
-            //              'update_at' => now()->addMinutes(5)
-            //           ]);
+            $tokenParts = explode('|', $token);
+            $token = end($tokenParts);
+
+            Log::info('Logout request received', [
+                'user' => $user,
+                
+            ]);
+
             return response()->json([
                 'data' => [
                     "id" => $user->id,
@@ -32,22 +37,21 @@ class AuthController extends Controller
             ]);
         }
 
-        return  response()->json([
+        return response()->json([
             "message" => "Wrong email or password"
-        ]);
+        ], 401);
+
     }
 
 
     public function logout(Request $request)
     {
-        $fullToken = $request->bearerToken();
 
-        if ($fullToken) {
+
+        $token = $request->bearerToken();
+
+        if ($token) {
             $user = Auth::user();
-
-            $tokenParts = explode('|', $fullToken);
-            $token = end($tokenParts);
-
             $currentUserToken = $user->tokens()->where('token', hash('sha256', $token))->first();
 
             if (!$currentUserToken) {
