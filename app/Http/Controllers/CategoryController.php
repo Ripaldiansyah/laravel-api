@@ -12,7 +12,7 @@ class CategoryController extends Controller
     {
         try {
             $company_id = CompanyController::getCompanyId();
-            $query = Category::where(
+            $query = Category::withCount('products')->where(
                 'company_id',
                 $company_id
             );
@@ -29,6 +29,7 @@ class CategoryController extends Controller
             }
 
             $categories = $query->paginate($limit);
+
 
             return response()->json([
                 'data' => $categories
@@ -132,6 +133,7 @@ class CategoryController extends Controller
             $response = [
                 'id' => $category->id,
                 'category_name' => $category->category_name,
+                'icon' => $category->icon,
                 'company_id' => $category->company_id,
                 'created_at' => $category->created_at,
                 'updated_at' => $category->updated_at,

@@ -6,9 +6,6 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Supplier;
-use App\Models\Tr_D_Purchase;
-use App\Models\Tr_D_Sale;
-use App\Models\Tr_H_Sale;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -41,8 +38,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-
-
         $company3 = Company::create([
             'company_name' => 'Finance Corp',
             'description' => 'Financial services and consulting.',
@@ -60,12 +55,21 @@ class DatabaseSeeder extends Seeder
             'Stationery',
             'Clothing',
         ];
-
+        $categories_icon = [
+            'https://img.icons8.com/?size=100&id=11144&format=png&color=000000',
+            'https://img.icons8.com/?size=100&id=y2GWL3nrlTBH&format=png&color=000000',
+            'https://img.icons8.com/?size=100&id=9958&format=png&color=000000',
+            'https://img.icons8.com/?size=100&id=25497&format=png&color=000000',
+        ];
+        $index = 0;
         foreach ($categories as $category) {
+
             Category::create([
                 'category_name' => $category,
+                'icon' => $categories_icon[$index],
                 'company_id' => $company1->id,
             ]);
+            $index++;
         }
 
 
@@ -93,7 +97,6 @@ class DatabaseSeeder extends Seeder
         }
 
         // Membuat transaksi penjualan
-
 
 
         // Membuat 20 pengguna untuk setiap perusahaan
